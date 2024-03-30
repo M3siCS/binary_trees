@@ -27,4 +27,3 @@ int main(void)
     printf("Height from %d: %lu\n", root->left->right->n, height);
     return (0);
 }
-

@@ -2,48 +2,37 @@
 
 /**
  * binary_tree_is_complete - Checks if a binary tree is complete
- * @tree: A pointer to the root node of the tree to check
+ * @tree: Pointer to the root node of the tree to check
  *
  * Return: 1 if the tree is complete, 0 otherwise
  */
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
+	int level = 0;
+	int nodes = 0;
+
 	if (tree == NULL)
 		return (0);
 
-	int is_leaf = 0;
-	int is_complete = 1;
-	binary_tree_t *queue[1024];
-	int front = 0, rear = 0;
-	queue[rear++] = (binary_tree_t *)tree;
-	
-	while (rear - front > 0)
+	while (tree)
 	{
-		binary_tree_t *current = queue[front++];
-		
-		if (current->left)
-		{
-			if (is_leaf)
-				is_complete = 0;
-			queue[rear++] = current->left;
-		}
-		else
-		{
-			is_leaf = 1;
-		}
-
-		if (current->right)
-		{
-			if (is_leaf)
-				is_complete = 0;
-			queue[rear++] = current->right;
-		}
-		else
-		{
-			is_leaf = 1;
-		}
+		nodes++;
+		tree = tree->left;
 	}
 
-	return (is_complete);
+	while (tree && level < nodes)
+	{
+		if ((!tree->left && tree->right) || (tree->left && !tree->right))
+			return (0);
+		if (!tree->left && !tree->right && level < nodes - 1)
+			return (0);
+		level++;
+		if (level < nodes && ((nodes >> (level - 1)) & 1))
+			tree = tree->right;
+		else
+			tree = tree->left;
+	}
+
+	return (1);
 }
 

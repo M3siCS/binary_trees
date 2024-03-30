@@ -1,106 +1,61 @@
 #include "binary_trees.h"
 
 /**
- * create_node - Creates a new levelorder_queue_t node.
- * @node: The binary tree node for the new node to contain.
+ * binary_tree_height - measures the height of a binary tree
+ * @tree: pointer to the root node of the tree to measure the height of
  *
- * Return: If an error occurs, NULL.
- *         Otherwise, a pointer to the new node.
+ * Return: the height of the tree. If tree is NULL, return 0
  */
-levelorder_queue_t *create_node(binary_tree_t *node)
+size_t binary_tree_height(const binary_tree_t *tree)
 {
-	levelorder_queue_t *new_node = malloc(sizeof(levelorder_queue_t));
-	if (new_node == NULL)
-		return (NULL);
-	new_node->node = node;
-	new_node->next = NULL;
-	return (new_node);
+	size_t left, right;
+
+	if (tree == NULL)
+		return (0);
+	left = binary_tree_height(tree->left);
+	right = binary_tree_height(tree->right);
+	if (left >= right)
+		return (1 + left);
+	return (1 + right);
 }
 
 /**
- * free_queue - Frees a levelorder_queue_t queue.
- * @head: A pointer to the head of the queue.
- */
-void free_queue(levelorder_queue_t *head)
-{
-	while (head != NULL)
-	{
-		levelorder_queue_t *tmp = head;
-		head = head->next;
-		free(tmp);
-	}
-}
-
-/**
- * pint_push - Runs a function on a given binary tree node and
- *             pushes its children into a levelorder_queue_t queue.
- * @node: The binary tree node to print and push.
- * @head: A double pointer to the head of the queue.
- * @tail: A double pointer to the tail of the queue.
- * @func: A pointer to the function to call on @node.
+ * binary_tree_level - perform a function on a specific level of a binary tree
+ * @tree: pointer to the root of the tree
+ * @l: level of the tree to perform a function on
+ * @func: function to perform
  *
- * Description: Upon malloc failure, frees the queue and exits with a status code of 1.
+ * Return: void
  */
-void pint_push(binary_tree_t *node, levelorder_queue_t **head,
-               levelorder_queue_t **tail, void (*func)(int))
+void binary_tree_level(const binary_tree_t *tree, size_t l, void (*func)(int))
 {
-	if (node == NULL || head == NULL || tail == NULL || func == NULL)
+	if (tree == NULL)
 		return;
-	func(node->n);
-	if (node->left)
+	if (l == 1)
+		func(tree->n);
+	else if (l > 1)
 	{
-		levelorder_queue_t *new_left = create_node(node->left);
-		if (new_left == NULL)
-		{
-			free_queue(*head);
-			exit(1);
-		}
-		(*tail)->next = new_left;
-		*tail = new_left;
-	}
-	if (node->right)
-	{
-		levelorder_queue_t *new_right = create_node(node->right);
-		if (new_right == NULL)
-		{
-			free_queue(*head);
-			exit(1);
-		}
-		(*tail)->next = new_right;
-		*tail = new_right;
+		binary_tree_level(tree->left, l - 1, func);
+		binary_tree_level(tree->right, l - 1, func);
 	}
 }
 
 /**
- * pop - Pops the head of a levelorder_queue_t queue.
- * @head: A double pointer to the head of the queue.
- */
-void pop(levelorder_queue_t **head)
-{
-	if (head == NULL || *head == NULL)
-		return;
-	levelorder_queue_t *tmp = *head;
-	*head = (*head)->next;
-	free(tmp);
-}
-
-/**
- * binary_tree_levelorder - Traverses a binary tree using
- *                          level-order traversal.
- * @tree: A pointer to the root node of the tree to traverse.
- * @func: A pointer to a function to call for each node.
+ * binary_tree_levelorder - traverses a binary tree using level-order traversal
+ * @tree: pointer to the root node of the tree to traverse
+ * @func: pointer to a function to call for each node.
+ * The value in the node must be passed as a parameter to this function
+ *
+ * Return: void
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
+	size_t height, i;
+
 	if (tree == NULL || func == NULL)
 		return;
-	levelorder_queue_t *head = NULL, *tail = NULL;
-	head = tail = create_node((binary_tree_t *)tree);
-	if (head == NULL)
-		return;
-	while (head != NULL)
-	{
-		pint_push(head->node, &head, &tail, func);
-		pop(&head);
-	}
+	height = binary_tree_height(tree);
+	for (i = 1; i <= height; i++)
+		binary_tree_level(tree, i, func);
 }
+

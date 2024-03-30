@@ -9,7 +9,7 @@
  */
 void print_num(int n)
 {
-	printf("%d\n", n);
+    printf("%d\n", n);
 }
 
 /**
@@ -30,6 +30,6 @@ int main(void)
 	root->right->right = binary_tree_node(root->right, 512);
 
 	binary_tree_print(root);
-	binary_tree_postorder(root, &print_num);
+	binary_tree_preorder(root, &print_num);
 	return (0);
 }

@@ -8,22 +8,27 @@
  */
 binary_tree_t *binary_tree_rotate_left(binary_tree_t *tree)
 {
+	binary_tree_t *pivot, *tmp;
+
 	if (tree == NULL || tree->right == NULL)
 		return (NULL);
-	binary_tree_t *pivot = tree->right;
 
-	tree->right = pivot->left;
-	if (pivot->left != NULL)
-		pivot->left->parent = tree;
-	pivot->parent = tree->parent;
-	if (tree->parent != NULL)
-	{
-		if (tree->parent->left == tree)
-			tree->parent->left = pivot;
-		else
-			tree->parent->right = pivot;
-	}
+	pivot = tree->right;
+	tmp = pivot->left;
 	pivot->left = tree;
+	tree->right = tmp;
+	if (tmp != NULL)
+		tmp->parent = tree;
+	tmp = tree->parent;
 	tree->parent = pivot;
+	pivot->parent = tmp;
+	if (tmp != NULL)
+	{
+		if (tmp->left == tree)
+			tmp->left = pivot;
+		else
+			tmp->right = pivot;
+	}
+
 	return (pivot);
 }

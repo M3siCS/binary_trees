@@ -35,12 +35,10 @@ binary_tree_t *binary_tree_node(binary_tree_t *parent, int value);
 binary_tree_t *binary_tree_insert_left(binary_tree_t *parent, int value);
 binary_tree_t *binary_tree_insert_right(binary_tree_t *parent, int value);
 void binary_tree_delete(binary_tree_t *tree);
-<<<<<<< HEAD
+
 int binary_tree_is_leaf(const binary_tree_t *node);
-=======
 
 int binary_tree_is_root(const binary_tree_t *node);
 
-void binary_tree_inorder(const binary_tree_t *tree, void (*func)(int));
->>>>>>> e9792e7a8be3271369781f29a0c5218e5ee3dbfd
+void binary_tree_inorder(const binary_tree_t *tree, void (*func)(int);
 #endif
